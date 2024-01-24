@@ -11,6 +11,8 @@ struct Message: Hashable {
     var id = UUID()
     var content: String
     var myMessage: Bool
+    
+    static let example = Message(content: "Hey, how are you?", myMessage: true)
 }
 
 struct ExampleMessages {
