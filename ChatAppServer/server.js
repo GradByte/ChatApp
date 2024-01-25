@@ -3,19 +3,18 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
+var counter = 0;
+var messages = [];
+var users = {
+  1: 'pass1',
+  2: 'pass2'
+};
+
+function createNewMessage(messages, userID, text) {
+  const newMessageObject = { id: counter, senderId: userID, message: text}
+  messages.push(newMessageObject);
+  counter += 1
 }
-
-let a = getRandomInt(10000)
-let b = getRandomInt(10000)
-let c = getRandomInt(10000)
-
-var messages = [
-  { id: a, senderId: 1, message: 'Hello, how are you?' },
-  { id: b, senderId: 2, message: 'Fine, you?' },
-  { id: c, senderId: 1, message: 'Thanks for asking!' }
-];
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
@@ -25,16 +24,35 @@ app.get('/messages', (req, res) => {
 });
 
 app.post('/send-message', (req, res) => {
-  const userID = req.body.senderId;
-  const message = req.body.message;
+  const userId = req.body.senderId;
+  const text = req.body.message;
 
-  if (message && userID) {
-    const newMessageObject = { id: getRandomInt(10000), senderId: userID, message: message}
-    messages.push(newMessageObject);
-
+  if (text && userId) {
+    createNewMessage(messages, userId, text);
+    console.log('GEGEGGEGE')
     res.json({ success: true, message: 'Item added successfully' });
   } else {
     res.status(400).json({ success: false, message: 'Invalid request' });
+  }
+});
+
+app.post('/sign-in', (req, res) => {
+  const userId = req.body.userId;
+  const password = req.body.password;
+  console.log(req.body);
+  console.log(`UserID: ${userId}`);
+  console.log(`Password: ${password}`);
+  console.log(`C: ${users[userId]}`);
+  
+  if (userId && password) {
+    if (userId in users) {
+      if (password === users[userId]){
+        res.json({ success: true, message: 'Right Credentials' });
+        console.log('FINALLY')
+      }
+    }
+  } else {
+    res.status(400).json({ success: false, message: 'Invalid Credentials' });
   }
 });
 

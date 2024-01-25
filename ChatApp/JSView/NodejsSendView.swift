@@ -67,7 +67,7 @@ struct NodejsSendView: View {
     func sendMessage() {
         
         if !newMessage.isEmpty{
-            addItem(senderId: 2, message: newMessage)
+            addItem(senderId: 1, message: newMessage)
             newMessage = ""
         }
     }

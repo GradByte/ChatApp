@@ -9,9 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     @State var signInScreenActive = true
-    @State var myUserId: Int? = nil
+    @State var myUserId: Int = 0
     @State private var searchText = ""
-    @State var data = ExamplePeople.people
+    //@State var data = ExamplePeople.people
+    @State var data = [PeopleItem(name: "John Doe", lastMessage: "Where are you bro?", profilePic: "avatar")]
     
     var body: some View {
         signInScreenActive ?
@@ -27,7 +28,7 @@ struct ContentView: View {
                         Section (header: GroupedListHeader(), footer: GroupedListFooter()) {
                             ForEach(searchResults, id: \.self) { people in
                                 VStack {
-                                    NavigationLink(destination: MessageView()) {
+                                    NavigationLink(destination: MessageView(myId: myUserId)) {
                                         MenuCell(people: people)
                                     }
                                 }

@@ -9,8 +9,10 @@ import SwiftUI
 import Combine
 
 struct MessageView: View {
-    @State var messages = ExampleMessages.messages
+    //@State var messages = ExampleMessages.messages
+    @State private var messages = [Item]()
     @State var newMessage: String = ""
+    @State var myId: Int?
     
     
     var body: some View {
@@ -19,9 +21,8 @@ struct MessageView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack {
-                        ForEach(messages, id: \.self) { message in
-                            MessageCell(message: message.content, myMessage: message.myMessage)
-                                .id(message)
+                        ForEach(messages, id: \.id) { item in
+                            MessageCell(message: item.message, myMessage: (item.senderId == 1))
                         }
                     }
                     .onReceive(Just(messages)) { _ in
@@ -49,18 +50,77 @@ struct MessageView: View {
         }
         .navigationTitle("Name")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            callFunc()
+        }
         
         
         
     }
     
+    func callFunc() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            //print("-----> callFunc")
+            self.fetchItems()
+            callFunc()
+        }
+    }
+    
     func sendMessage() {
         
         if !newMessage.isEmpty{
-            messages.append(Message(content: newMessage, myMessage: true))
-            messages.append(Message(content: "Reply of " + newMessage , myMessage: false))
+            addItem(senderId: myId ?? 1, message: newMessage)
             newMessage = ""
         }
+    }
+    
+    func fetchItems() {
+        guard let url = URL(string: "http://localhost:3000/messages") else {
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                return
+            }
+            
+            do {
+                let decodedData = try JSONDecoder().decode([Item].self, from: data)
+                DispatchQueue.main.async {
+                    self.messages = decodedData
+                }
+            } catch {
+                print("Error decoding JSON: \(error)")
+            }
+        }.resume()
+    }
+    
+    func addItem(senderId: Int, message: String) {
+        guard let url = URL(string: "http://localhost:3000/send-message") else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let newMessage = OngoingMessage(senderId: senderId, message: message)
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(newMessage)
+            print(request.httpBody!)
+        } catch {
+            print("Error encoding JSON body: \(error)")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            // Handle the response or error here
+            // You can update the UI or perform additional actions if needed
+        }.resume()
+        
+        //fetch to update messages
+        self.fetchItems()
     }
 }
 
