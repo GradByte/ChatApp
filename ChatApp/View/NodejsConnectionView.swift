@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct NodejsConnectionView: View {
-    @State private var items = [String]()
+    @State private var items = [Item]()
     
     var body: some View {
         VStack {
-            List(items, id: \.self) { item in
-                Text(item)
+            List(items, id: \.id) { item in
+                VStack(alignment: .leading) {
+                    Text("Message: \(item.message)")
+                    Text("Sender ID: \(item.senderId)")
+                }
             }
             .padding()
             
@@ -25,7 +28,7 @@ struct NodejsConnectionView: View {
     }
     
     func fetchItems() {
-        guard let url = URL(string: "http://localhost:3000/hello") else {
+        guard let url = URL(string: "http://localhost:3000/messages") else {
             return
         }
         
@@ -35,7 +38,7 @@ struct NodejsConnectionView: View {
             }
             
             do {
-                let decodedData = try JSONDecoder().decode([String].self, from: data)
+                let decodedData = try JSONDecoder().decode([Item].self, from: data)
                 DispatchQueue.main.async {
                     self.items = decodedData
                 }

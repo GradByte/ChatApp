@@ -15,6 +15,17 @@ struct Message: Hashable {
     static let example = Message(content: "Hey, how are you?", myMessage: true)
 }
 
+struct Item: Decodable, Hashable {
+    var id: Int
+    let senderId: Int
+    let message: String
+}
+
+struct OngoingMessage: Encodable {
+    let senderId: Int
+    let message: String
+}
+
 struct ExampleMessages {
     static let messages = [
         Message(content: "Hey, welcome!", myMessage: false),

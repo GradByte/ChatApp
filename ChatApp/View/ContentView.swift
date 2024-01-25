@@ -8,25 +8,37 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var signInScreenActive = true
+    @State var myUserId: Int? = nil
     @State private var searchText = ""
     @State var data = ExamplePeople.people
     
     var body: some View {
-        NavigationView {
-            List {
-                Section (header: GroupedListHeader(), footer: GroupedListFooter()) {
-                    ForEach(searchResults, id: \.self) { people in
-                        VStack {
-                            NavigationLink(destination: MessageView()) {
-                                MenuCell(people: people)
-                            }
+        signInScreenActive ?
+        AnyView(SignInView(signInScreenActive: $signInScreenActive, myUserId: $myUserId)
+            .preferredColorScheme(.light)) :
+        AnyView (
+            NavigationView {
+                ZStack {
+                    LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                                .edgesIgnoringSafeArea(.all)
+                    
+                    List {
+                        Section (header: GroupedListHeader(), footer: GroupedListFooter()) {
+                            ForEach(searchResults, id: \.self) { people in
+                                VStack {
+                                    NavigationLink(destination: MessageView()) {
+                                        MenuCell(people: people)
+                                    }
+                                }
+                            }.onDelete(perform: self.deleteItem)
                         }
-                    }.onDelete(perform: self.deleteItem)
+                    }.listStyle(GroupedListStyle())
+                        .navigationTitle("ChatApp")
                 }
-            }.listStyle(GroupedListStyle())
-                .navigationTitle("ChatApp")
-        }
-        .searchable(text: $searchText)
+            }
+            .searchable(text: $searchText)
+        )
     }
     
     private func deleteItem(at indexSet: IndexSet) {
