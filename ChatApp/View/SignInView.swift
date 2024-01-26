@@ -13,11 +13,12 @@ struct SignInView: View {
     @State var myPassword: String = ""
     @State var returnedAnswer: SigninReturn? = nil
     @State private var showAlert = false
+    @State private var isSheetPresented = false
     
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                        .edgesIgnoringSafeArea(.all)
+                .edgesIgnoringSafeArea(.all)
             
             VStack {
                 Spacer()
@@ -48,10 +49,10 @@ struct SignInView: View {
                 Spacer()
                 
                 Button {
-                    signIn(userId: myUserId ?? 1, password: myPassword)
+                    signIn(userId: myUserId , password: myPassword)
                     
                 } label: {
-                    Text("Sign In!")
+                    Text("Sign In")
                         .foregroundColor(.white)
                         .font(.headline)
                         .padding()
@@ -61,14 +62,46 @@ struct SignInView: View {
                         )
                         .cornerRadius(10)
                         .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 2)
+                        .frame(width: 240, height: 40)
+                        .padding()
                 }
                 .alert(isPresented: $showAlert) {
-                                Alert(
-                                    title: Text("Invalid Credentials"),
-                                    message: Text("\(returnedAnswer?.message ?? "Something is wrong!")"),
-                                    dismissButton: .default(Text("OK"))
-                                )
-                            }
+                    Alert(
+                        title: Text("Invalid Credentials"),
+                        message: Text("\(returnedAnswer?.message ?? "Something is wrong!")"),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
+                
+                Button {
+                    // Set the state variable to true to present the sheet
+                    isSheetPresented.toggle()
+                } label: {
+                    Text("Sign Up")
+                        .foregroundColor(.white)
+                        .font(.headline)
+                        .padding()
+                        .padding(.horizontal, 20)
+                        .background(
+                            LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.8941176534, green: 0.9529411793, blue: 0.890196084, alpha: 1)), Color(#colorLiteral(red: 0.360784322, green: 0.6627451181, blue: 0.9137254953, alpha: 1))]), startPoint: .leading, endPoint: .trailing)
+                        )
+                        .cornerRadius(10)
+                        .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 2)
+                        .frame(width: 240, height: 40)
+                        .padding()
+                }
+            
+                
+            .sheet(isPresented: $isSheetPresented) {
+                // Content of the sheet
+                ZStack {
+                    LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.360784322, green: 0.6627451181, blue: 0.9137254953, alpha: 1)), Color(#colorLiteral(red: 0.8941176534, green: 0.9529411793, blue: 0.890196084, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    Text("SHEET!!!!")
+                }
+                
+            }
                 
                 Spacer()
             }

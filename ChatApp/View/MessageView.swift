@@ -22,7 +22,7 @@ struct MessageView: View {
                 ScrollView {
                     LazyVStack {
                         ForEach(messages, id: \.id) { item in
-                            MessageCell(message: item.message, myMessage: (item.senderId == 1))
+                            MessageCell(message: item.message, myMessage: (item.senderId == myId))
                         }
                     }
                     .onReceive(Just(messages)) { _ in
@@ -69,7 +69,7 @@ struct MessageView: View {
     func sendMessage() {
         
         if !newMessage.isEmpty{
-            addItem(senderId: myId ?? 1, message: newMessage)
+            addItem(senderId: myId ?? 2, message: newMessage)
             newMessage = ""
         }
     }
