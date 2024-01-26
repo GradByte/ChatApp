@@ -29,7 +29,6 @@ app.post('/send-message', (req, res) => {
 
   if (text && userId) {
     createNewMessage(messages, userId, text);
-    console.log('GEGEGGEGE')
     res.json({ success: true, message: 'Item added successfully' });
   } else {
     res.status(400).json({ success: false, message: 'Invalid request' });
@@ -39,10 +38,6 @@ app.post('/send-message', (req, res) => {
 app.post('/sign-in', (req, res) => {
   const userId = req.body.userId;
   const password = req.body.password;
-  console.log(req.body);
-  console.log(`UserID: ${userId}`);
-  console.log(`Password: ${password}`);
-  console.log(`C: ${users[userId]}`);
   
   if (userId && password) {
     if (userId in users) {
