@@ -8,7 +8,7 @@
 import Foundation
 
 struct Credential: Encodable {
-    let userId: Int
+    let userId: String
     let password: String
 }
 

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State var signInScreenActive = true
-    @State var myUserId: Int = 0
+    @State var myUserId: String = ""
     @State private var searchText = ""
     //@State var data = ExamplePeople.people
     @State var data = [PeopleItem(name: "John Doe", lastMessage: "Where are you bro?", profilePic: "avatar")]

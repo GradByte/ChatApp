@@ -17,12 +17,12 @@ struct Message: Hashable {
 
 struct Item: Decodable, Hashable {
     var id: Int
-    let senderId: Int
+    let senderId: String
     let message: String
 }
 
 struct OngoingMessage: Encodable {
-    let senderId: Int
+    let senderId: String
     let message: String
 }
 

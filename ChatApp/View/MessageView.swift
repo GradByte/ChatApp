@@ -12,7 +12,7 @@ struct MessageView: View {
     //@State var messages = ExampleMessages.messages
     @State private var messages = [Item]()
     @State var newMessage: String = ""
-    @State var myId: Int?
+    @State var myId: String?
     
     
     var body: some View {
@@ -69,7 +69,7 @@ struct MessageView: View {
     func sendMessage() {
         
         if !newMessage.isEmpty{
-            addItem(senderId: myId ?? 2, message: newMessage)
+            addItem(senderId: myId ?? "user", message: newMessage)
             newMessage = ""
         }
     }
@@ -95,7 +95,7 @@ struct MessageView: View {
         }.resume()
     }
     
-    func addItem(senderId: Int, message: String) {
+    func addItem(senderId: String, message: String) {
         guard let url = URL(string: "http://localhost:3000/send-message") else {
             return
         }

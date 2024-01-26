@@ -1,38 +1,34 @@
 //
-//  SignInView.swift
+//  SignUpView.swift
 //  ChatApp
 //
-//  Created by GradByte on 25.01.2024.
+//  Created by GradByte on 26.01.2024.
 //
 
 import SwiftUI
 
-struct SignInView: View {
-    @Binding var signInScreenActive: Bool
-    @Binding var myUserId: String
+struct SignUpView: View {
+    
+    @State var myUserId: String = ""
     @State var myPassword: String = ""
     @State var returnedAnswer: SigninReturn? = nil
-    @State var showAlert = false
-    @State var isSheetPresented = false
+    @State private var showAlert = false
+    @Binding var isSheetPresented: Bool
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.360784322, green: 0.6627451181, blue: 0.9137254953, alpha: 1)), Color(#colorLiteral(red: 0.8941176534, green: 0.9529411793, blue: 0.890196084, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
+                
                 Spacer()
                 
-                Text("ChatApp")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                Text("by GradByte")
+                Text("Sign Up Page")
                     .font(.title)
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
                 
-                Spacer()
                 Spacer()
                 
                 TextField("UserID", text: $myUserId)
@@ -49,26 +45,8 @@ struct SignInView: View {
                 Spacer()
                 
                 Button {
-                    signIn(userId: myUserId , password: myPassword)
+                    signUp(userId: myUserId, password: myPassword)
                     
-                } label: {
-                    Text("Sign In")
-                        .foregroundColor(.white)
-                        .font(.headline)
-                        .padding()
-                        .padding(.horizontal, 20)
-                        .background(
-                            LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
-                        )
-                        .cornerRadius(10)
-                        .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 2)
-                        .frame(width: 240, height: 40)
-                        .padding()
-                }
-                
-                Button {
-                    // Set the state variable to true to present the sheet
-                    isSheetPresented.toggle()
                 } label: {
                     Text("Sign Up")
                         .foregroundColor(.white)
@@ -85,24 +63,19 @@ struct SignInView: View {
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(
-                        title: Text("Invalid Credentials"),
+                        title: Text("Sign Up Failed!"),
                         message: Text("\(returnedAnswer?.message ?? "Something is wrong!")"),
                         dismissButton: .default(Text("OK"))
                     )
                 }
-                //sign up sheet
-                .sheet(isPresented: $isSheetPresented) {
-                    SignUpView(isSheetPresented: $isSheetPresented)
-                }
-                
                 
                 Spacer()
             }
         }
     }
     
-    func signIn(userId: String, password: String) {
-        guard let url = URL(string: "http://localhost:3000/sign-in") else {
+    func signUp(userId: String, password: String) {
+        guard let url = URL(string: "http://localhost:3000/sign-up") else {
             return
         }
         
@@ -133,7 +106,7 @@ struct SignInView: View {
                     self.returnedAnswer = decodedData
                     
                     if self.returnedAnswer?.success == true {
-                        self.signInScreenActive.toggle()
+                        self.isSheetPresented.toggle()
                     }
                     else {
                         self.showAlert = true
