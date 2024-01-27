@@ -40,7 +40,9 @@ struct SignInView: View {
                     .keyboardType(.default)
                     .frame(width: 200)
                     .padding()
-                
+                    .autocorrectionDisabled(true)
+                    .autocapitalization(.none)
+                    
                 SecureField("Password", text: $myPassword)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.default)

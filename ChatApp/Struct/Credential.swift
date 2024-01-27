@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct Credential: Encodable {
+struct Credential: Codable {
     let userId: String
     let password: String
 }
 
-struct SigninReturn: Decodable {
+struct SigninReturn: Codable {
     let id = UUID()
     let success: Bool
     let message: String

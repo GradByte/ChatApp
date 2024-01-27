@@ -14,14 +14,15 @@ struct MessageCell: View {
     var body: some View {
         
         Text(message)
-            .bold()
+            .fontWeight(.semibold)
             .padding(10)
             .foregroundColor(myMessage ? .white : .black)
             .background(myMessage ? Color.blue : Color(UIColor.lightGray))
             .cornerRadius(20)
             .frame(maxWidth: .infinity, alignment: (myMessage ? .trailing : .leading))
             .padding([.trailing, .leading], 20)
-            .padding([.top], 10)
+            .padding([myMessage ? .leading : .trailing], 80)
+            
         
     }
 }

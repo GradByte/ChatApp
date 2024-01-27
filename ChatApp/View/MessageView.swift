@@ -10,9 +10,10 @@ import Combine
 
 struct MessageView: View {
     //@State var messages = ExampleMessages.messages
-    @State private var messages = [Item]()
+    @State private var messages = [Message]()
     @State var newMessage: String = ""
-    @State var myId: String?
+    @State var myId: String
+    @State var receiverId: String
     
     
     var body: some View {
@@ -41,14 +42,16 @@ struct MessageView: View {
                 HStack {
                     TextField("Send a message", text: $newMessage)
                         .textFieldStyle(.roundedBorder)
-                    Button(action: sendMessage)   {
+                        .autocorrectionDisabled(true)
+    
+                    Button(action: askSendMessage)   {
                         Image(systemName: "paperplane")
                     }
                 }
                 .padding()
             }
         }
-        .navigationTitle("Name")
+        .navigationTitle("\(receiverId)")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             callFunc()
@@ -58,44 +61,62 @@ struct MessageView: View {
         
     }
     
+    //Get messages every second
     func callFunc() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            //print("-----> callFunc")
-            self.fetchItems()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.getMessages(senderId: self.myId, receiverId: self.receiverId)
             callFunc()
         }
     }
     
-    func sendMessage() {
+    func askSendMessage() {
         
         if !newMessage.isEmpty{
-            addItem(senderId: myId ?? "user", message: newMessage)
-            newMessage = ""
+            self.sendMessage(senderId: self.myId, receiverId: self.receiverId, message: self.newMessage)
+            self.newMessage = ""
         }
     }
     
-    func fetchItems() {
-        guard let url = URL(string: "http://localhost:3000/messages") else {
+    func getMessages(senderId: String, receiverId: String) {
+        guard let url = URL(string: "http://localhost:3000/get-messages") else {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let conversationWith = GetMessage(senderId: senderId, receiverId: receiverId)
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(conversationWith)
+            
+        } catch {
+            print("Error encoding JSON body: \(error)")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 return
             }
             
             do {
-                let decodedData = try JSONDecoder().decode([Item].self, from: data)
+                let decodedData = try JSONDecoder().decode([Message].self, from: data)
                 DispatchQueue.main.async {
                     self.messages = decodedData
+                    
                 }
             } catch {
                 print("Error decoding JSON: \(error)")
             }
+            
         }.resume()
+        
     }
     
-    func addItem(senderId: String, message: String) {
+    
+    func sendMessage(senderId: String, receiverId: String, message: String) {
         guard let url = URL(string: "http://localhost:3000/send-message") else {
             return
         }
@@ -104,11 +125,10 @@ struct MessageView: View {
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let newMessage = OngoingMessage(senderId: senderId, message: message)
+        let newMessage = SendMessage(senderId: senderId, receiverId: receiverId, message: message)
         
         do {
             request.httpBody = try JSONEncoder().encode(newMessage)
-            print(request.httpBody!)
         } catch {
             print("Error encoding JSON body: \(error)")
             return
@@ -120,10 +140,10 @@ struct MessageView: View {
         }.resume()
         
         //fetch to update messages
-        self.fetchItems()
+        self.getMessages(senderId: senderId, receiverId: receiverId)
     }
 }
 
 #Preview {
-    MessageView()
+    MessageView(myId: "paul", receiverId: "john")
 }

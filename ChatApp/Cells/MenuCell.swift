@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct MenuCell: View {
-    @State var people: PeopleItem
+    @State var receiverId: String
     
     var body: some View {
         HStack{
-            Image(systemName:"person.circle")
+            Image("ppImage")
                 .resizable()
+                .scaledToFill()
                 .frame(width: 50, height: 50)
+                .clipShape(Circle())
             VStack(alignment: .leading, spacing: 8) {
-                Text(people.name)
+                Text(receiverId)
                     .bold()
                     .font(.subheadline)
                     .lineLimit(1)
-                Text(people.lastMessage)
+                Text("Let's talk privately!")
                     .font(.subheadline)
                     .lineLimit(1)
             }
@@ -29,5 +31,5 @@ struct MenuCell: View {
 }
 
 #Preview {
-    MenuCell(people: PeopleItem.example)
+    MenuCell(receiverId: "paul")
 }
