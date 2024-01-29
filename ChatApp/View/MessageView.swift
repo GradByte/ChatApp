@@ -14,10 +14,11 @@ struct MessageView: View {
     @State var newMessage: String = ""
     @State var myId: String
     @State var receiverId: String
+    @StateObject var getMessageService: GetMessageService
+    @ObservedObject var sendMessageService = SendMessageService()
     
     
     var body: some View {
-        
         VStack {
             ScrollViewReader { proxy in
                 ScrollView {
@@ -26,15 +27,14 @@ struct MessageView: View {
                             MessageCell(message: item.message, myMessage: (item.senderId == myId))
                         }
                     }
-                    .onReceive(Just(messages)) { _ in
-                        withAnimation {
-                            proxy.scrollTo(messages.last, anchor: .bottom)
-                        }
-                        
-                    }.onAppear {
-                        withAnimation {
-                            proxy.scrollTo(messages.last, anchor: .bottom)
-                        }
+                    .onAppear {
+                        proxy.scrollTo(messages.last, anchor: .bottom)
+                    }
+                }
+                .onChange(of: messages) { _ in
+                    // Scroll to the end whenever messages are updated
+                    withAnimation {
+                        proxy.scrollTo(messages.count - 1, anchor: .bottom)
                     }
                 }
                 
@@ -44,7 +44,13 @@ struct MessageView: View {
                         .textFieldStyle(.roundedBorder)
                         .autocorrectionDisabled(true)
     
-                    Button(action: askSendMessage)   {
+                    //Button(action: askSendMessage)   {
+                    //    Image(systemName: "paperplane")
+                    //}
+                    Button {
+                        sendMessageService.sendMessage(message: SendMessage(senderId: myId, receiverId: receiverId, message: newMessage))
+                        newMessage = ""
+                    } label : {
                         Image(systemName: "paperplane")
                     }
                 }
@@ -54,13 +60,19 @@ struct MessageView: View {
         .navigationTitle("\(receiverId)")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            callFunc()
+            getMessages(senderId: myId, receiverId: receiverId)
+        }
+        .onChange(of: getMessageService.message) { newMessage in
+            if let new = newMessage {
+                messages.append(new)
+            }
         }
         
         
         
     }
     
+
     //Get messages every second
     func callFunc() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -145,5 +157,5 @@ struct MessageView: View {
 }
 
 #Preview {
-    MessageView(myId: "paul", receiverId: "john")
+    MessageView(myId: "paul", receiverId: "john", getMessageService: GetMessageService(senderId: "paul", receiverId: "john"))
 }

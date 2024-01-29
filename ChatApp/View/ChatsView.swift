@@ -25,7 +25,7 @@ struct ChatsView: View {
                     Section (header: GroupedListHeader(), footer: GroupedListFooter()) {
                         ForEach(searchResults, id: \.self) { name in
                             VStack {
-                                NavigationLink(destination: MessageView(myId: myUserId, receiverId: name)) {
+                                NavigationLink(destination: MessageView(myId: myUserId, receiverId: name, getMessageService: GetMessageService(senderId: myUserId, receiverId: name))) {
                                     MenuCell(receiverId: name)
                                 }
                             }
@@ -52,7 +52,7 @@ struct ChatsView: View {
         .searchable(text: $searchText)
         .onAppear {
             getChats(senderId: myUserId)
-            callFunc()
+            //callFunc()
         }
         
     }
