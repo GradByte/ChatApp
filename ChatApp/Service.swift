@@ -87,6 +87,35 @@ final class SendMessageService: ObservableObject {
     }
 }
 
+final class GetChatsService: ObservableObject {
+    private var manager = SocketManager(socketURL: URL(string: "ws://localhost:3000")!, config: [.log(false), .compress])
+    
+    @Published var chat: String = ""
+    
+    init(senderId: String) {
+        let socket = manager.defaultSocket
+
+        socket.on(clientEvent: .connect) { (data, ack) in
+            print("GetChats-Socket connected")
+        }
+
+        socket.on("\(senderId)-getChats") { [weak self] (data, ack) in
+            print("Message received")
+            print(data[0])
+
+            if let messageData = data[0] as? [String: Any],
+               let newChat = messageData["chat"] as? String {
+                DispatchQueue.main.async {
+                    self?.chat = newChat
+                    print(newChat)
+                }
+            }
+        }
+
+        socket.connect()
+    }
+}
+
 /**
 final class Service: ObservableObject {
     private var manager = SocketManager(socketURL: URL(string: "ws://localhost:3000")!, config: [.log(true), .compress])

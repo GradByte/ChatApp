@@ -16,7 +16,7 @@ struct ContentView: View {
         AnyView(SignInView(signInScreenActive: $signInScreenActive, myUserId: $myUserId)
             .preferredColorScheme(.light)) :
         AnyView (
-            ChatsView(myUserId: myUserId)
+            ChatsView(signInScreenActive: $signInScreenActive, myUserId: myUserId, getChatsService: GetChatsService(senderId: myUserId))
         )
     }
     

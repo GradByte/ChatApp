@@ -130,7 +130,10 @@ app.post('/get-chats', (req, res) => {
           // inside keys, you can find the receiverIds
           // of already created chats for this senderId
           const keys = Object.keys(chats[senderId]);
+          // sender updates his/her chats with this json
           res.json(keys);
+          // receiver will get the new chat through its socket
+          io.sockets.emit(`${receiverId}-getChats`, {chat: senderId});
         }
       }
     }
@@ -195,4 +198,6 @@ io.sockets.on('connection', function(socket){
         }
 
     });
+
+
 });

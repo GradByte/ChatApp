@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct ChatsView: View {
+    @Binding var signInScreenActive: Bool
     @State var myUserId: String
     @State var receiverId: String = ""
     @State private var showAlert = false
     @State private var userInput = ""
     @State private var searchText = ""
     @State private var chats: [String] = []
+    @StateObject var getChatsService: GetChatsService
     
     var body: some View {
         NavigationView {
@@ -40,6 +42,12 @@ struct ChatsView: View {
                         showAlert.toggle()
                     }
                 }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Log Out") {
+                        signInScreenActive.toggle()
+                    }
+                    .foregroundColor(.red)
+                }
             }
             .alert("Enter UserID to start chat!", isPresented: $showAlert) {
                         TextField("UserID", text: $userInput)
@@ -53,6 +61,9 @@ struct ChatsView: View {
         .onAppear {
             getChats(senderId: myUserId)
             //callFunc()
+        }
+        .onChange(of: getChatsService.chat) { newChat in
+            chats.append(newChat)
         }
         
     }
@@ -163,5 +174,5 @@ struct ChatsView: View {
 }
 
 #Preview {
-    ChatsView(myUserId: "john")
+    ChatsView(signInScreenActive: .constant(false), myUserId: "john", getChatsService: GetChatsService(senderId: "john"))
 }
