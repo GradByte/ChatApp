@@ -36,6 +36,10 @@ After this, you can start using the ChatApp. But be aware, there is no database 
 - https://github.com/socketio/socket.io-client-swift
 
 ## Screenshots
-| ![Main Page](https://github.com/GradByte/TravelJournal/blob/main/screenshots/MainPage.png) | ![Add Travel](https://github.com/GradByte/TravelJournal/blob/main/screenshots/AddTravel.png) | ![Travel Details](https://github.com/GradByte/TravelJournal/blob/main/screenshots/TravelDetails.png) | ![Edit Travel](https://github.com/GradByte/TravelJournal/blob/main/screenshots/EditTravel.png) |
+| ![Main Page](https://github.com/GradByte/ChatApp/blob/main/screenshots/Signin.png) | ![Add Travel](https://github.com/GradByte/ChatApp/blob/main/screenshots/Signin1.png) | ![Travel Details](https://github.com/GradByte/ChatApp/blob/main/screenshots/Signin2.png) | ![Edit Travel](https://github.com/GradByte/ChatApp/blob/main/screenshots/Signup.png) |
 | --- | --- | --- | --- |
-| Main Page | Add Travel | Travel Details | Edit Travel |
+| Sign In | Sign In Alert | Sign In Alert | Sign Up |
+
+| ![Main Page](https://github.com/GradByte/ChatApp/blob/main/screenshots/Signup1.png) | ![Add Travel](https://github.com/GradByte/ChatApp/blob/main/screenshots/Chat.png) | ![Travel Details](https://github.com/GradByte/ChatApp/blob/main/screenshots/AddChat.png) | ![Edit Travel](https://github.com/GradByte/ChatApp/blob/main/screenshots/Message.png) |
+| --- | --- | --- | --- |
+| Sign Up Alert | Chats | Add Chat | Messages |
