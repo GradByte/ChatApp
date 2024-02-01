@@ -24,7 +24,7 @@ struct SignUpView: View {
                 
                 Spacer()
                 
-                Text("Sign Up Page")
+                Text("Sign-Up Page")
                     .font(.title)
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
@@ -32,17 +32,10 @@ struct SignUpView: View {
                 Spacer()
                 
                 TextField("UserID", text: $myUserId)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.default)
-                    .frame(width: 200)
-                    .padding()
-                    .autocorrectionDisabled(true)
-                    .autocapitalization(.none)
+                    .modifier(TextFieldViewModifier())
                 
                 SecureField("Password", text: $myPassword)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.default)
-                    .frame(width: 200)
+                    .modifier(TextFieldViewModifier())
                 
                 Spacer()
                 
@@ -50,18 +43,8 @@ struct SignUpView: View {
                     signUp(userId: myUserId, password: myPassword)
                     
                 } label: {
-                    Text("Sign Up")
-                        .foregroundColor(.white)
-                        .font(.headline)
-                        .padding()
-                        .padding(.horizontal, 20)
-                        .background(
-                            LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.8941176534, green: 0.9529411793, blue: 0.890196084, alpha: 1)), Color(#colorLiteral(red: 0.360784322, green: 0.6627451181, blue: 0.9137254953, alpha: 1))]), startPoint: .leading, endPoint: .trailing)
-                        )
-                        .cornerRadius(10)
-                        .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 2)
-                        .frame(width: 240, height: 40)
-                        .padding()
+                    Text("Sign-Up")
+                        .modifier(ButtonViewModifier())
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(

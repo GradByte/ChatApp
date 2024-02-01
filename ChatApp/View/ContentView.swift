@@ -19,8 +19,6 @@ struct ContentView: View {
             ChatsView(signInScreenActive: $signInScreenActive, myUserId: myUserId, getChatsService: GetChatsService(senderId: myUserId))
         )
     }
-    
-    
 }
 
 #Preview {
