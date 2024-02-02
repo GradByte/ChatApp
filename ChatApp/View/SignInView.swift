@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct SignInView: View {
-    @Binding var signInScreenActive: Bool
-    @Binding var myUserId: String
-    @State private var myPassword: String = ""
+    @ObservedObject var contentViewModel: ContentView.ViewModel
     @ObservedObject var viewModel = ViewModel()
     
     var body: some View {
@@ -33,17 +31,17 @@ struct SignInView: View {
                 Spacer()
                 Spacer()
                 
-                TextField("UserID", text: $myUserId)
+                TextField("UserID", text: $contentViewModel.myUserId)
                     .modifier(TextFieldViewModifier())
                     
-                SecureField("Password", text: $myPassword)
+                SecureField("Password", text: $viewModel.myPassword)
                     .modifier(TextFieldViewModifier())
                 
                 Spacer()
                 
                 Button {
-                    viewModel.signIn(userId: myUserId, password: myPassword)
-                    myPassword = ""
+                    viewModel.signIn(userId: contentViewModel.myUserId)
+                    viewModel.myPassword = ""
                     
                 } label: {
                     Text("Sign-In")
@@ -66,14 +64,14 @@ struct SignInView: View {
                 }
                 //sign up sheet
                 .sheet(isPresented: $viewModel.isSheetPresented) {
-                    SignUpView(isSheetPresented: $viewModel.isSheetPresented)
+                    SignUpView(signInViewModel: viewModel)
                 }
                 
                 Spacer()
             }
         }
         .onChange(of: viewModel.signInScreenActive) { newParameter in
-            signInScreenActive = newParameter
+            contentViewModel.signInScreenActive = newParameter
         }
     }
 }

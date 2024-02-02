@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct SignUpView: View {
-    
-    @State var myUserId: String = ""
-    @State var myPassword: String = ""
-    @State var returnedAnswer: SigninReturn? = nil
-    @State private var showAlert = false
-    @Binding var isSheetPresented: Bool
+    //ObservedObject because SignInView.ViewModel is used in multiple views.
+    @ObservedObject var signInViewModel: SignInView.ViewModel
+    //StateObject because SignUpView.ViewModel is only used in this view.
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
         ZStack {
@@ -31,25 +29,25 @@ struct SignUpView: View {
                 
                 Spacer()
                 
-                TextField("UserID", text: $myUserId)
+                TextField("UserID", text: $viewModel.myUserId)
                     .modifier(TextFieldViewModifier())
                 
-                SecureField("Password", text: $myPassword)
+                SecureField("Password", text: $viewModel.myPassword)
                     .modifier(TextFieldViewModifier())
                 
                 Spacer()
                 
                 Button {
-                    signUp(userId: myUserId, password: myPassword)
+                    viewModel.signUp()
                     
                 } label: {
                     Text("Sign-Up")
                         .modifier(ButtonViewModifier())
                 }
-                .alert(isPresented: $showAlert) {
+                .alert(isPresented: $viewModel.showAlert) {
                     Alert(
                         title: Text("Sign Up Failed!"),
-                        message: Text("\(returnedAnswer?.message ?? "Something is wrong!")"),
+                        message: Text("\(viewModel.returnedAnswer?.message ?? "Something is wrong!")"),
                         dismissButton: .default(Text("OK"))
                     )
                 }
@@ -57,53 +55,8 @@ struct SignUpView: View {
                 Spacer()
             }
         }
-    }
-    
-    func signUp(userId: String, password: String) {
-        guard let url = URL(string: "http://localhost:3000/sign-up") else {
-            return
+        .onChange(of: viewModel.isSheetPresented) { newParam in
+            signInViewModel.isSheetPresented = newParam
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let credential = Credential(userId: userId, password: password)
-        
-        print(credential)
-        
-        do {
-            request.httpBody = try JSONEncoder().encode(credential)
-            
-        } catch {
-            print("Error encoding JSON body: \(error)")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                return
-            }
-            
-            do {
-                let decodedData = try JSONDecoder().decode(SigninReturn.self, from: data)
-                DispatchQueue.main.async {
-                    self.returnedAnswer = decodedData
-                    
-                    if self.returnedAnswer?.success == true {
-                        self.isSheetPresented.toggle()
-                    }
-                    else {
-                        self.showAlert = true
-                        self.myPassword = ""
-                    }
-                    
-                }
-            } catch {
-                print("Error decoding JSON: \(error)")
-            }
-            
-        }.resume()
-        
     }
 }

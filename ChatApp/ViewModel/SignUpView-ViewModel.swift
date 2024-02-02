@@ -1,24 +1,22 @@
 //
-//  SignInView-ViewModel.swift
+//  SignUpView-ViewModel.swift
 //  ChatApp
 //
-//  Created by GradByte on 1.02.2024.
+//  Created by GradByte on 2.02.2024.
 //
 
 import Foundation
 
-extension SignInView {
+extension SignUpView {
     class ViewModel: ObservableObject {
-        
+        @Published var myUserId: String = ""
         @Published var myPassword: String = ""
-        @Published var signInScreenActive = true
         @Published var returnedAnswer: SigninReturn? = nil
         @Published var showAlert = false
-        @Published var isSheetPresented = false
+        @Published var isSheetPresented = true
         
-        //try to sign in with myUserId and myPassword
-        func signIn(userId: String) {
-            guard let url = URL(string: "http://localhost:3000/sign-in") else {
+        func signUp() {
+            guard let url = URL(string: "http://localhost:3000/sign-up") else {
                 return
             }
             
@@ -26,7 +24,7 @@ extension SignInView {
             request.httpMethod = "POST"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             
-            let credential = Credential(userId: userId, password: myPassword)
+            let credential = Credential(userId: myUserId, password: myPassword)
             
             print(credential)
             
@@ -46,16 +44,15 @@ extension SignInView {
                 do {
                     let decodedData = try JSONDecoder().decode(SigninReturn.self, from: data)
                     DispatchQueue.main.async { [weak self] in
-                        
                         self?.returnedAnswer = decodedData
                         
                         if self?.returnedAnswer?.success == true {
-                            self?.signInScreenActive.toggle()
+                            self?.isSheetPresented.toggle()
                         }
                         else {
                             self?.showAlert = true
+                            self?.myPassword = ""
                         }
-                        
                     }
                 } catch {
                     print("Error decoding JSON: \(error)")

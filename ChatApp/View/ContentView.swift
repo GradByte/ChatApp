@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var signInScreenActive = true
-    @State var myUserId: String = ""
+    @ObservedObject var viewModel = ViewModel()
     
     var body: some View {
-        signInScreenActive ?
-        AnyView(SignInView(signInScreenActive: $signInScreenActive, myUserId: $myUserId)
+        viewModel.signInScreenActive ?
+        AnyView(SignInView(contentViewModel: viewModel)
             .preferredColorScheme(.light)) :
         AnyView (
-            ChatsView(signInScreenActive: $signInScreenActive, myUserId: myUserId, getChatsService: GetChatsService(senderId: myUserId))
+            ChatsView(contentViewModel: viewModel, getChatsService: GetChatsService(senderId: viewModel.myUserId))
         )
     }
 }
