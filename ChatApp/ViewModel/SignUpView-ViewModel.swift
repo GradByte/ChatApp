@@ -47,7 +47,7 @@ extension SignUpView {
                         self?.returnedAnswer = decodedData
                         
                         if self?.returnedAnswer?.success == true {
-                            self?.isSheetPresented.toggle()
+                            self?.isSheetPresented = false
                         }
                         else {
                             self?.showAlert = true

@@ -50,7 +50,7 @@ extension SignInView {
                         self?.returnedAnswer = decodedData
                         
                         if self?.returnedAnswer?.success == true {
-                            self?.signInScreenActive.toggle()
+                            self?.signInScreenActive = false
                         }
                         else {
                             self?.showAlert = true

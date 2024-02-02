@@ -16,10 +16,6 @@ extension ChatsView {
         @Published var chats: [String] = []
         
         
-        func submit(myUserId: String) {
-            addChat(myUserId: myUserId)
-            showAlert.toggle()
-        }
         
         func getChats(myUserId: String) {
             guard let url = URL(string: "http://localhost:3000/get-chats") else {
@@ -68,7 +64,7 @@ extension ChatsView {
             request.httpMethod = "POST"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             
-            let newChat = AddChat(senderId: myUserId, receiverId: receiverId)
+            let newChat = AddChat(senderId: myUserId, receiverId: userInput)
             
             do {
                 request.httpBody = try JSONEncoder().encode(newChat)
@@ -87,7 +83,6 @@ extension ChatsView {
                     let decodedData = try JSONDecoder().decode([String].self, from: data)
                     DispatchQueue.main.async {
                         self.chats = decodedData
-                        print(self.chats)
                         
                     }
                 } catch {

@@ -43,15 +43,17 @@ struct ChatsView: View {
             }
             .alert("Enter UserID to start chat!", isPresented: $viewModel.showAlert) {
                 TextField("UserID", text: $viewModel.userInput)
-                            .autocorrectionDisabled(true)
-                            .autocapitalization(.none)
+                    .autocorrectionDisabled(true)
+                    .autocapitalization(.none)
                 Button {
-                    viewModel.submit(myUserId: contentViewModel.myUserId)
+                    viewModel.addChat(myUserId: contentViewModel.myUserId)
+                    viewModel.userInput = ""
+                    
                 } label : {
                     Text("OK")
                 }
                 Button("Cancel", role: .cancel) { }
-                    }
+            }
         }
         .searchable(text: $viewModel.searchText)
         .onAppear {
@@ -59,6 +61,7 @@ struct ChatsView: View {
         }
         .onChange(of: getChatsService.chat) { newChat in
             viewModel.chats.append(newChat)
+            print(viewModel.chats)
         }
         
     }

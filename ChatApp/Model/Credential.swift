@@ -13,7 +13,7 @@ struct Credential: Codable {
 }
 
 struct SigninReturn: Codable {
-    var id = UUID()
+    let id = UUID()
     let success: Bool
     let message: String
 }

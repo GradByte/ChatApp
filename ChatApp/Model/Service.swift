@@ -17,12 +17,12 @@ final class GetMessageService: ObservableObject {
         let socket = manager.defaultSocket
 
         socket.on(clientEvent: .connect) { (data, ack) in
-            print("GetMessage-Socket connected")
+            //print("GetMessage-Socket connected")
         }
 
         socket.on("\(senderId)-getMessage") { [weak self] (data, ack) in
-            print("Message received")
-            print(data[0])
+            //print("Message received")
+            //print(data[0])
 
             if let messageData = data[0] as? [String: Any],
                let id = messageData["id"] as? Int,
@@ -58,12 +58,12 @@ final class SendMessageService: ObservableObject {
 
     private func setupSocket() {
         socket.on(clientEvent: .connect) { (data, ack) in
-            print("Connected to socket")
+            //print("Connected to socket")
             self.isConnected = true
         }
 
         socket.on(clientEvent: .disconnect) { (data, ack) in
-            print("Disconnected from socket")
+            //print("Disconnected from socket")
             self.isConnected = false
         }
 
@@ -73,7 +73,7 @@ final class SendMessageService: ObservableObject {
     func sendMessage(message: SendMessage) {
         // Check if the socket is connected before trying to send a message
         guard isConnected else {
-            print("Socket is not connected.")
+            //print("Socket is not connected.")
             return
         }
 
