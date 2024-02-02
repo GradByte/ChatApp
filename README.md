@@ -30,6 +30,7 @@ After this, you can start using the ChatApp. But be aware, there is no database 
 
 ## Technologies
 - SwiftUI - iOS 16.1
+- MVVM architectural pattern
 - Node.js
 - Express.js
 - Socket.IO
